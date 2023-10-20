@@ -1,17 +1,22 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter.messagebox import showinfo
 from model.xls_2_xlsx import xls_2_xlsx
 from model.match_acc_exp import start_match
 from model.generate_base import generate_base
 
 def execute_actions():
-    xls_2_xlsx()
-    if start_match_var.get():
-        input_value = input_entry.get()
-        start_match(False, input_value)
-    else:
-        start_match(False)
-    generate_base()
+    try:
+        xls_2_xlsx()
+        if start_match_var.get():
+            input_value = input_entry.get()
+            start_match(False, input_value)
+        else:
+            start_match(False)
+        generate_base()
+        showinfo("Execution Complete", "已生成底稿，请查看文件夹")
+    except Exception as e:
+        showinfo("Execution Error", 'ERROR!\n'+str(e))
 
 def toggle_start_match():
     if start_match_var.get():
