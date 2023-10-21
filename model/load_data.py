@@ -15,8 +15,8 @@ def load_accured() -> list:
             expense_bandwidth = pd.read_pickle(f'./pkl/{filename} 带宽.pkl')
             expense_no_bandwidth = pd.read_pickle(f'./pkl/{filename} 非带宽.pkl')
         except FileNotFoundError:
-            expense_bandwidth = pd.read_excel(f'/Users/zhuangyuhao/Documents/Fileport/预算表/{filename} 带宽.xlsx')
-            expense_no_bandwidth = pd.read_excel(f'/Users/zhuangyuhao/Documents/Fileport/预算表/{filename} 非带宽.xlsx')
+            expense_bandwidth = pd.read_excel(f'./预提表/{filename} 带宽.xlsx')
+            expense_no_bandwidth = pd.read_excel(f'./预提表/{filename} 非带宽.xlsx')
             expense_bandwidth.to_pickle(f'./pkl/{filename} 带宽.pkl')
             expense_no_bandwidth.to_pickle(f'./pkl/{filename} 非带宽.pkl')
 

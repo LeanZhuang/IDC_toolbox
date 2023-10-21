@@ -8,7 +8,7 @@ def xls_2_xlsx():
     """
 
     # 设置下载文件夹路径和目标文件夹路径
-    download_folder = "/Users/zhuangyuhao/Downloads"
+    download_folder = "IO"
     middle_folder = "temp"
 
     # 获取下载文件夹内最新的xls文件
