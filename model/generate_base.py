@@ -1,34 +1,33 @@
 from openpyxl import load_workbook
-from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.styles import PatternFill
-# import model.prepare_accured_data as prepare_accured_data
 from model.formatted import formatted_accured_data, formatted_bandwith, formatted_no_bandwith
+import os
+from model.IDC_path import idc_path
 
 
 def generate_base():
+    this_path = idc_path()
 
     # 加载底稿
     base_wb = formatted_accured_data()
     base_ws = base_wb.active
 
     # 加载匹配到的预提
-    # wb1 = load_workbook('middle_data/非带宽.xlsx')
     wb1 = formatted_no_bandwith()
     ws1 = wb1.active
     ws1.insert_rows(0)
     ws1.insert_rows(0)
 
-    # wb2 = load_workbook('middle_data/带宽.xlsx')
     wb2 = formatted_bandwith()
     ws2 = wb2.active
     ws2.insert_rows(0)
     ws2.insert_rows(0)
 
     # 合并三个Excel文件的数据
-    merged_data =  list(base_ws.values) + list(ws1.values) + list(ws2.values)
+    merged_data = list(base_ws.values) + list(ws1.values) + list(ws2.values)
 
     # 创建空工作簿
-    merged_wb = load_workbook('temp/empty_file.xlsx')
+    merged_wb = load_workbook(this_path + '/temp/empty_file.xlsx')
 
     # 设置工作表为合并后数据的工作表
     merged_ws = merged_wb.active
@@ -89,4 +88,7 @@ def generate_base():
 
 
     # 保存合并后的Excel文件
-    merged_wb.save('IO/【底稿】.xlsx')
+
+    merged_wb.save(this_path + '/IO/【底稿】.xlsx')
+
+generate_base()

@@ -8,8 +8,13 @@ Usage:
 from setuptools import setup
 
 APP = ['GUI.py']
-DATA_FILES = ['model/formatted.py', 'model/generate_base.py', 'model/load_data.py', 'model/match_acc_exp.py', 'model/xls_2_xlsx.py']
-OPTIONS = {'includes':['pandas', 'openpyxl', 'xldr']}
+DATA_FILES = ['model/formatted.py',
+              'model/generate_base.py',
+              'model/load_data.py',
+              'model/match_acc_exp.py',
+              'model/xls_2_xlsx.py',
+              'model/IDC_path.py']
+OPTIONS = {'includes':['pandas', 'openpyxl', 'xldr', 'xlrd']}
 
 setup(
     app=APP,

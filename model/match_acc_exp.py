@@ -1,20 +1,21 @@
 import pandas as pd
+import os
 from model.load_data import load_accured
-from model.xls_2_xlsx import xls_2_xlsx
+from model.xls_2_xlsx import xls_2_xlsx_2
+from model.IDC_path import idc_path
 
 
 def match_nornal():
+    this_path = idc_path()
+
     """匹配正常的预提表，非变更合同
     """
     # 加载预提表
     no_bandwidth_list, bandwidth_list = load_accured()
 
-    # 加载中间表
-    # accured_table = xls_2_xlsx()
-    # accured_table.save('./temp/中间底稿.xlsx')
-    xls_2_xlsx()
+    xls_2_xlsx_2()
 
-    check = pd.read_excel('./temp/中间底稿.xlsx')
+    check = pd.read_excel(this_path + '/temp/中间底稿.xlsx')
 
 
     contract_id = check['合同编号'].to_list()
@@ -53,8 +54,8 @@ def match_nornal():
 
 
     # 保存中间表
-    bandwidth_need.to_excel('./temp/带宽.xlsx', index=False)
-    no_bandwidth_need.to_excel('./temp/非带宽.xlsx', index=False)
+    bandwidth_need.to_excel(this_path + '/temp/带宽.xlsx', index=False)
+    no_bandwidth_need.to_excel(this_path + '/temp/非带宽.xlsx', index=False)
 
 
 def match_change(supplier: str):
@@ -64,15 +65,15 @@ def match_change(supplier: str):
         supplier (str): 供应商名称
     """
 
+    this_path = idc_path()
+
     # 加载预提表
     no_bandwidth_list, bandwidth_list = load_accured()
 
     # 加载中间表
-    # accured_table = xls_2_xlsx()
-    # accured_table.save('./temp/中间底稿.xlsx')
-    xls_2_xlsx()
+    xls_2_xlsx_2()
 
-    check = pd.read_excel('./temp/中间底稿.xlsx')
+    check = pd.read_excel(this_path + '/temp/中间底稿.xlsx')
 
     main_supplier = supplier
 
@@ -111,8 +112,8 @@ def match_change(supplier: str):
     no_bandwidth_need = no_bandwidth_need[no_bandwidth_need['费用期间'].isin(period_list)]
 
     # 保存中间表
-    bandwidth_need.to_excel('./temp/带宽.xlsx', index=False)
-    no_bandwidth_need.to_excel('./temp/非带宽.xlsx', index=False)
+    bandwidth_need.to_excel(this_path + '/temp/带宽.xlsx', index=False)
+    no_bandwidth_need.to_excel(this_path + '/temp/非带宽.xlsx', index=False)
 
 
 def start_match(is_change: bool, supplier: str = None):
@@ -122,3 +123,5 @@ def start_match(is_change: bool, supplier: str = None):
         match_nornal()
     else:
         match_change(supplier=supplier)
+
+start_match(True, 'aaa')

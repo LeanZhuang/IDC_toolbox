@@ -1,13 +1,17 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showinfo
-from model.xls_2_xlsx import xls_2_xlsx
+from model.xls_2_xlsx import xls_2_xlsx_2
 from model.match_acc_exp import start_match
 from model.generate_base import generate_base
 
 def execute_actions():
     try:
-        xls_2_xlsx()
+        xls_2_xlsx_2()
+    except Exception as e:
+        showinfo("ERROR", "xls 保存 xlsx 失败")
+
+    try:
         if start_match_var.get():
             input_value = input_entry.get()
             start_match(False, input_value)
@@ -27,9 +31,6 @@ def toggle_start_match():
 root = tk.Tk()
 root.title("IDC 底稿生成器")
 root.geometry("300x200")
-# Convert XLS to XLSX button
-# convert_button = ttk.Button(root, text="Convert XLS to XLSX", command=xls_2_xlsx)
-# convert_button.pack(pady=10)
 
 # Start Match variable
 start_match_var = tk.BooleanVar(value=False)
@@ -47,10 +48,6 @@ input_label.pack(expand=True)
 # Input Entry
 input_entry = ttk.Entry(root, state='disabled')
 input_entry.pack(expand=True)
-
-# Generate Base Files button
-# generate_button = ttk.Button(root, text="Generate Base Files", command=generate_base)
-# generate_button.pack(pady=10)
 
 # Execute Actions button
 execute_button = ttk.Button(root, text="开始生成", command=execute_actions)

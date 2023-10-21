@@ -1,15 +1,12 @@
-# import os
-# import pandas as pd
 from openpyxl import load_workbook
-# from openpyxl import Workbook
-# from openpyxl.utils.dataframe import dataframe_to_rows
-# from openpyxl.utils import get_column_letter
-# from openpyxl.styles import Font, PatternFill
-
+from model.IDC_path import idc_path
+import os
 
 def formatted_accured_data():
+    this_path = idc_path()
+
     # 加载工作簿
-    workbook = load_workbook('./temp/中间底稿.xlsx')
+    workbook = load_workbook(this_path + '/temp/中间底稿.xlsx')
     sheet = workbook.active
 
     # 定义值和公式所在的区域范围
@@ -44,24 +41,15 @@ def formatted_accured_data():
         sheet[cell] = value  # 输入值到单元格
 
 
-    # fill = PatternFill(fill_type='solid', fgColor='ACD6FF')
-
-
-    # for row in range(last_row + 1, last_row + 5):
-    #     for col in ['E', 'F', 'G']:
-    #         cell = '{}{}'.format(col, row)
-    #         sheet[cell].fill = fill
-
-
     # 保存工作簿
     return workbook
-
 
 
 # 格式化带宽预提
 def formatted_bandwith():
     # 加载工作簿
-    workbook = load_workbook('./temp/带宽.xlsx')
+    this_path = idc_path()
+    workbook = load_workbook(this_path + '/temp/带宽.xlsx')
     sheet = workbook.active
 
     # 定义值和公式所在的区域范围
@@ -71,16 +59,13 @@ def formatted_bandwith():
                 'D':'运营商统计', 'E':'差异率', 'F':'中值',
                 'G':'结算流量', 'H':'计费单位', 'I':'结算'}
 
-    # fill = PatternFill(fill_type='solid', fgColor='ACD6FF')
 
     # 循环遍历要输入值的列表
     for key, value in col_list.items():
         row = last_row + 2  # 计算要输入行的行号
         cell = f'{key}{row}'  # 构建单元格地址
         sheet[cell] = value  # 输入值到单元格
-        # sheet[cell].fill = fill
 
-    # workbook.save('temp/带宽.xlsx')
     return workbook
 
 
@@ -88,26 +73,20 @@ def formatted_bandwith():
 # 格式化非带宽预提
 def formatted_no_bandwith():
     # 加载工作簿
-    workbook = load_workbook('./temp/非带宽.xlsx')
+    this_path = idc_path()
+    workbook = load_workbook(this_path + '/temp/非带宽.xlsx')
     sheet = workbook.active
 
     # 定义值和公式所在的区域范围
     last_row = sheet.max_row
 
-
-    # fill = PatternFill(fill_type='solid', fgColor='FFFF6F')
-
-
     row = last_row + 1
     cell = f'R{row}'
     sheet[cell] = f'=SUM(R2:R{row-1})'
-    # sheet[cell].fill = fill
-
 
     cell = f'Q{row}'
     sheet[cell] = f'合计'
-    # sheet[cell].fill = fill
 
-
-    # workbook.save('middle_data/非带宽.xlsx')
     return workbook
+
+formatted_accured_data()
