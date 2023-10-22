@@ -30,7 +30,24 @@ def toggle_start_match():
 
 root = tk.Tk()
 root.title("IDC 底稿生成器")
-root.geometry("300x200")
+# root.geometry("450x300")
+# root.geometry("+%d+%d" % ((root.winfo_screenwidth() - root.winfo_reqwidth()) / 2,
+#                           (root.winfo_screenheight() - root.winfo_reqheight()) / 2))
+# 获取屏幕的宽度和高度
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+
+# 设置窗口的宽度和高度
+window_width = 450
+window_height = 300
+
+# 计算窗口在屏幕上的左上角位置
+x = (screen_width - window_width) // 2
+y = (screen_height - window_height) // 3
+
+# 设置窗口的尺寸和位置
+root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
 
 # Start Match variable
 start_match_var = tk.BooleanVar(value=False)
@@ -39,7 +56,7 @@ start_match_var = tk.BooleanVar(value=False)
 start_match_checkbox = ttk.Checkbutton(root,
                                        text="是否为换合同（默认为否）",
                                        variable=start_match_var, command=toggle_start_match)
-start_match_checkbox.pack(pady=10, expand=True)
+start_match_checkbox.pack(pady=5, expand=True)
 
 # Input Label
 input_label = ttk.Label(root, text="若为换合同，输入供应商全称:")
