@@ -6,10 +6,11 @@ from model.IDC_path import idc_path
 
 
 def match_nornal():
-    this_path = idc_path()
-
     """匹配正常的预提表，非变更合同
     """
+
+    this_path = idc_path()
+
     # 加载预提表
     no_bandwidth_list, bandwidth_list = load_accured()
 
@@ -38,14 +39,14 @@ def match_nornal():
     no_bandwidth_need = no_bandwidth_need.iloc[:, :25]
     bandwidth_need = bandwidth_need.iloc[:, :29]
 
-    period_list = check['费用表月份'].to_list()
+    period_list = check['费用表月份'].to_list()  #TODO: 检查是费用表月份还是费用所属月份
 
     period_list = list(map(str, period_list))
 
     period_list = [period.replace('-', '') for period in period_list]
     period_list = list(set(period_list))
 
-    bandwidth_need['费用期间'] = bandwidth_need['费用期间'].astype(str)
+    bandwidth_need['费用期间'] = bandwidth_need['费用期间'].astype(str)  #TODO: 与上述检查核对逻辑
     no_bandwidth_need['费用期间'] = no_bandwidth_need['费用期间'].astype(str)
 
 
@@ -97,14 +98,14 @@ def match_change(supplier: str):
     bandwidth_need = bandwidth_need.iloc[:, 0:29]
 
 
-    period_list = check['费用表月份'].to_list()
+    period_list = check['费用表月份'].to_list()  #TODO: 同上
 
     period_list = list(map(str, period_list))
 
     period_list = [period.replace('-', '') for period in period_list]
     period_list = list(set(period_list))
 
-    bandwidth_need['费用期间'] = bandwidth_need['费用期间'].astype(str)
+    bandwidth_need['费用期间'] = bandwidth_need['费用期间'].astype(str)  #TODO: 同上
     no_bandwidth_need['费用期间'] = no_bandwidth_need['费用期间'].astype(str)
 
 
@@ -124,4 +125,4 @@ def start_match(is_change: bool, supplier: str = None):
     else:
         match_change(supplier=supplier)
 
-start_match(True, 'aaa')
+# start_match(True, 'aaa')

@@ -7,6 +7,7 @@ from model.IDC_path import idc_path
 
 def generate_base():
     this_path = idc_path()
+    output_path = '/Users/zhuangyuhao/Desktop'
 
     # 加载底稿
     base_wb = formatted_accured_data()
@@ -89,6 +90,6 @@ def generate_base():
 
     # 保存合并后的Excel文件
 
-    merged_wb.save(this_path + '/IO/【底稿】.xlsx')
+    merged_wb.save(output_path + '/【底稿】.xlsx')
 
-generate_base()
+# generate_base()

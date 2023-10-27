@@ -28,4 +28,4 @@ def load_accured() -> list:
 
     return no_bandwidth_list, bandwidth_list
 
-load_accured()
+# load_accured()

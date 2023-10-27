@@ -89,4 +89,4 @@ def formatted_no_bandwith():
 
     return workbook
 
-formatted_accured_data()
+# formatted_accured_data()

@@ -5,16 +5,18 @@ from model.xls_2_xlsx import xls_2_xlsx_2
 from model.match_acc_exp import start_match
 from model.generate_base import generate_base
 
+
+# 执行程序
 def execute_actions():
     try:
         xls_2_xlsx_2()
     except Exception as e:
-        showinfo("ERROR", "xls 保存 xlsx 失败")
+        showinfo("Load Error", "xls 保存 xlsx 失败\n检查是否存在相应文件\n\n依旧存在问题，请反馈:zhuangyuhao@baidu.com")
 
     try:
         if start_match_var.get():
             input_value = input_entry.get()
-            start_match(False, input_value)
+            start_match(True, input_value)
         else:
             start_match(False)
         generate_base()
@@ -22,24 +24,26 @@ def execute_actions():
     except Exception as e:
         showinfo("Execution Error", 'ERROR!\n'+str(e))
 
+
+# 切换匹配模型
 def toggle_start_match():
     if start_match_var.get():
         input_entry.configure(state='normal')
     else:
         input_entry.configure(state='disabled')
 
+
+# GUI 框架
 root = tk.Tk()
-root.title("IDC 底稿生成器")
-# root.geometry("450x300")
-# root.geometry("+%d+%d" % ((root.winfo_screenwidth() - root.winfo_reqwidth()) / 2,
-#                           (root.winfo_screenheight() - root.winfo_reqheight()) / 2))
+root.title("IDC 底稿生成器 Ver 1.0")
+
 # 获取屏幕的宽度和高度
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
 # 设置窗口的宽度和高度
 window_width = 450
-window_height = 300
+window_height = 250
 
 # 计算窗口在屏幕上的左上角位置
 x = (screen_width - window_width) // 2
