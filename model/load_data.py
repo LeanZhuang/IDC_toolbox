@@ -9,7 +9,7 @@ def load_accured() -> list:
     """
     this_path = idc_path()
 
-    filenames = ['2305', '2306', '2307', '2308', '2309']
+    filenames = ['2302', '2303', '2304', '2305', '2306', '2307', '2308', '2309']
     no_bandwidth_list = []
     bandwidth_list = []
 
