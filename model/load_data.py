@@ -1,5 +1,7 @@
 import pandas as pd
 from model.IDC_path import idc_path
+import os
+
 
 def load_accured() -> list:
     """读取预提表并生成中间文件，随后生成预提表清单
@@ -9,7 +11,17 @@ def load_accured() -> list:
     """
     this_path = idc_path()
 
-    filenames = ['2302', '2303', '2304', '2305', '2306', '2307', '2308', '2309']
+    name_list = []
+
+    folder_path = this_path + '/预提表'
+    file_names = os.listdir(folder_path)
+    for file_name in file_names:
+        file_name = file_name[:4]
+        name_list.append(file_name)
+
+    filenames = list(set(name_list))
+    # print(filenames)
+
     no_bandwidth_list = []
     bandwidth_list = []
 
@@ -26,6 +38,7 @@ def load_accured() -> list:
         no_bandwidth_list.append(expense_no_bandwidth)
         bandwidth_list.append(expense_bandwidth)
 
+    # print(len(bandwidth_list))
     return no_bandwidth_list, bandwidth_list
 
 # load_accured()

@@ -14,12 +14,12 @@ def formatted_accured_data():
 
     word_list = ['非带宽小计', '带宽小计', '合计', '付款申请与对账单核对']
 
-    formula_list1 = [f'=SUMIF(M1:M{last_row},"机架",F1:F{last_row})+SUMIF(M1:M{last_row},"IP",F1:F{last_row})',
+    formula_list1 = [f'=F{last_row+3}-F{last_row+2}',
                     f'=SUMIF(M1:M{last_row},"端口组",F1:F{last_row})',
-                    f'=F{last_row + 1}+F{last_row + 2}']
+                    f'=SUM(F2:F{last_row})']
 
-    formula_list2 = [f'=F{last_row + 1}-VLOOKUP("合计",Q:R,2,FALSE)',
-                    f'=F{last_row + 2}-VLOOKUP("合计",H:I,2,FALSE)']
+    formula_list2 = [f'=ROUND((F{last_row + 1}-VLOOKUP("合计",Q:R,2,FALSE)), 2)',
+                    f'=ROUND((F{last_row + 2}-VLOOKUP("合计",H:I,2,FALSE)), 2)']
 
 
     # 循环遍历要输入值的列表
@@ -37,8 +37,10 @@ def formatted_accured_data():
     # 循环遍历要输入公式的范围每一行
     for index, value in enumerate(formula_list2):
         row = last_row + index + 1  # 计算要输入行的行号
+        number_format = '0.00%'
         cell = 'G{}'.format(row)  # 构建单元格地址
         sheet[cell] = value  # 输入值到单元格
+        sheet[cell].number_format = number_format
 
 
     # 保存工作簿

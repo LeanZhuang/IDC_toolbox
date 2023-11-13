@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showinfo
-from model.xls_2_xlsx import xls_2_xlsx_2
+from model.convert_xlsx import convert_xlsx
 from model.match_acc_exp import start_match
 from model.generate_base import generate_base
 
@@ -9,7 +9,7 @@ from model.generate_base import generate_base
 # 执行程序
 def execute_actions():
     try:
-        xls_2_xlsx_2()
+        convert_xlsx()
     except Exception as e:
         showinfo("Load Error", "xls 保存 xlsx 失败\n检查是否存在相应文件\n\n依旧存在问题，请反馈:zhuangyuhao@baidu.com")
 
@@ -35,7 +35,7 @@ def toggle_start_match():
 
 # GUI 框架
 root = tk.Tk()
-root.title("IDC 底稿生成器 Ver 1.0")
+root.title("IDC 底稿生成器 Ver 0.10 beta")
 
 # 获取屏幕的宽度和高度
 screen_width = root.winfo_screenwidth()

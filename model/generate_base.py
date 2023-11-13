@@ -1,7 +1,11 @@
+import os
+
+import openpyxl
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
+from openpyxl.styles import numbers
+
 from model.formatted import formatted_accured_data, formatted_bandwith, formatted_no_bandwith
-import os
 from model.IDC_path import idc_path
 
 
@@ -44,6 +48,9 @@ def generate_base():
     row = last_row + 1
     cell = f'E{row}'
     merged_ws[cell] = f'=(D{row}-C{row})/D{row}'
+
+    number_format = '0.00%'
+    merged_ws[cell].number_format = number_format
 
     cell = f'F{row}'
     merged_ws[cell] = f'=AVERAGE(C{row},D{row})'

@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 from model.load_data import load_accured
-from model.xls_2_xlsx import xls_2_xlsx_2
+from model.convert_xlsx import convert_xlsx
 from model.IDC_path import idc_path
 
 
@@ -14,7 +14,9 @@ def match_nornal():
     # 加载预提表
     no_bandwidth_list, bandwidth_list = load_accured()
 
-    xls_2_xlsx_2()
+    # print(bandwidth_list)
+
+    convert_xlsx()
 
     check = pd.read_excel(this_path + '/temp/中间底稿.xlsx')
 
@@ -36,8 +38,13 @@ def match_nornal():
             database = database[database['当前计提合同'] == id]
             bandwidth_need = pd.concat([bandwidth_need, database])
 
+    bandwidth_need.to_excel('/Users/zhuangyuhao/Desktop/test.xlsx', index=False)
+
     no_bandwidth_need = no_bandwidth_need.iloc[:, :25]
     bandwidth_need = bandwidth_need.iloc[:, :29]
+    print(bandwidth_need['费用期间'])
+
+    # print(bandwidth_need) OKOKOKOKOKOKOKOKOKOK
 
     period_list = check['费用表月份'].to_list()  #TODO: 检查是费用表月份还是费用所属月份
 
@@ -46,12 +53,19 @@ def match_nornal():
     period_list = [period.replace('-', '') for period in period_list]
     period_list = list(set(period_list))
 
+    # print(period_list) ['202310] OKOKOKOKOKOKOKOKOKOKOK
+
+
     bandwidth_need['费用期间'] = bandwidth_need['费用期间'].astype(str)  #TODO: 与上述检查核对逻辑
     no_bandwidth_need['费用期间'] = no_bandwidth_need['费用期间'].astype(str)
+
+    # print(bandwidth_need['费用期间'])
 
 
     bandwidth_need = bandwidth_need[bandwidth_need['费用期间'].isin(period_list)]
     no_bandwidth_need = no_bandwidth_need[no_bandwidth_need['费用期间'].isin(period_list)]
+
+    # print(bandwidth_need) empty????????
 
 
     # 保存中间表
@@ -72,7 +86,7 @@ def match_change(supplier: str):
     no_bandwidth_list, bandwidth_list = load_accured()
 
     # 加载中间表
-    xls_2_xlsx_2()
+    convert_xlsx()
 
     check = pd.read_excel(this_path + '/temp/中间底稿.xlsx')
 
