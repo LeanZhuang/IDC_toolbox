@@ -1,6 +1,7 @@
 from openpyxl import load_workbook
+
 from model.IDC_path import idc_path
-import os
+
 
 def formatted_accured_data():
     this_path = idc_path()

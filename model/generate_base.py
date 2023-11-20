@@ -95,6 +95,12 @@ def generate_base():
             merged_ws[cell].fill = gray
 
 
+    # 配置备注文字
+
+    max_row = merged_ws.max_row
+    cell = f'J{max_row}'
+    merged_ws[cell] = f'=IF(ABS(G{max_row}-C{max_row})<0.01,"按照百度流量结算",IF(ABS(G{max_row}-F{max_row})<0.01,"按照中值结算",IF(AND(ABS(G{max_row}-D{max_row})<0.01,D{max_row}<C{max_row}),"供应商流量小，按照供应商流量结算","保底")))'
+
     # 保存合并后的Excel文件
 
     merged_wb.save(output_path + '/【底稿】.xlsx')

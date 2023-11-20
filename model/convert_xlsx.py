@@ -1,6 +1,8 @@
 import os
+
 import xlrd
 from openpyxl import Workbook
+
 from model.IDC_path import idc_path
 
 

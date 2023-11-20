@@ -1,13 +1,15 @@
-import pandas as pd
-from model.IDC_path import idc_path
 import os
 
+import pandas as pd
 
-def load_accured() -> list:
+from model.IDC_path import idc_path
+
+
+def load_accured() -> dict:
     """读取预提表并生成中间文件，随后生成预提表清单
 
     Returns:
-        list: 带宽与非带宽的预提表清单
+        dict: 带宽与非带宽的预提表清单，键为四位数日期，值为对应的DataFrame
     """
     this_path = idc_path()
 
@@ -22,8 +24,8 @@ def load_accured() -> list:
     filenames = list(set(name_list))
     # print(filenames)
 
-    no_bandwidth_list = []
-    bandwidth_list = []
+    no_bandwidth_dict = {}  # 使用字典替代列表
+    bandwidth_dict = {}  # 使用字典替代列表
 
     for filename in filenames:
         try:
@@ -35,10 +37,10 @@ def load_accured() -> list:
             expense_bandwidth.to_pickle(this_path + f'/pkl/{filename} 带宽.pkl')
             expense_no_bandwidth.to_pickle(this_path + f'/pkl/{filename} 非带宽.pkl')
 
-        no_bandwidth_list.append(expense_no_bandwidth)
-        bandwidth_list.append(expense_bandwidth)
+        no_bandwidth_dict[filename] = expense_no_bandwidth  # 使用字典键值对存储
+        bandwidth_dict[filename] = expense_bandwidth  # 使用字典键值对存储
 
-    # print(len(bandwidth_list))
-    return no_bandwidth_list, bandwidth_list
+    return no_bandwidth_dict, bandwidth_dict
 
-# load_accured()
+# no_bandwidth_dict, bandwidth_dict = load_accured()
+# print(no_bandwidth_dict.keys())

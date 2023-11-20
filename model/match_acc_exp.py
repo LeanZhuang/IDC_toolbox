@@ -1,8 +1,86 @@
 import pandas as pd
-import os
+
 from model.load_data import load_accured
 from model.convert_xlsx import convert_xlsx
 from model.IDC_path import idc_path
+
+
+def period_list(check):
+    table_list = check['费用表月份'].to_list()
+    table_list = list(map(str, table_list))
+    table_list = [period.replace('-', '') for period in table_list]
+    table_list = [period.replace('2023', '23') for period in table_list]
+    table_list = list(set(table_list))
+
+    generate_list = check['费用所属月份'].to_list()
+    generate_list = list(map(str, generate_list))
+    generate_list = [period.replace('-', '') for period in generate_list]
+    generate_list = list(set(generate_list))
+
+    resource_list = check['资源类型'].to_list()
+    resource_list = list(map(str, resource_list))
+    resource_list = list(set(resource_list))
+
+    return table_list, generate_list, resource_list
+
+
+def filter_dict_values(dictionary, date_list):
+    """筛选需要的预提表
+    """
+
+    # dictionary: {'2310': df, ...}
+    filtered_table_list = []
+
+    for date in date_list:
+        if date in dictionary:
+            filtered_table_list.append(dictionary[date])
+
+    return filtered_table_list
+
+
+def general_match(check, no_bandwidth_dict, bandwidth_dict):
+    """通用筛选
+    """
+
+    # 载入费用表list，费用所属期间list，资源list
+    table_list, generate_list, resource_list = period_list(check)
+
+    ## 筛选需要的费用表
+    filtered_no_bandwidth_values = filter_dict_values(no_bandwidth_dict, table_list)
+    filtered_bandwidth_values = filter_dict_values(bandwidth_dict, table_list)
+
+    ## 筛选费用发生期间
+    # 创建空dataframe
+    no_bandwidth_need = pd.DataFrame([])
+    bandwidth_need = pd.DataFrame([])
+
+    # 拼接dataframe，生成汇总的大预提表
+    for database in filtered_no_bandwidth_values:
+            no_bandwidth_need = pd.concat([no_bandwidth_need, database])
+
+    for database in filtered_bandwidth_values:
+            bandwidth_need = pd.concat([bandwidth_need, database])
+
+    no_bandwidth_need['费用期间'] = no_bandwidth_need['费用期间'].astype(str)
+    bandwidth_need['费用期间'] = bandwidth_need['费用期间'].astype(str)
+
+    no_bandwidth_need = no_bandwidth_need[no_bandwidth_need['费用期间'].isin(generate_list)]
+    bandwidth_need = bandwidth_need[bandwidth_need['费用期间'].isin(generate_list)]
+
+    ## 筛选资源类型
+    no_bandwidth_need_2 = pd.DataFrame([])
+    # print(resource_list)
+
+    resource_list += ['电路', '传输', '电流', '占用', '服务', '改造', '光纤', '专线', '其他', '费']
+
+    for resource in resource_list:
+        no_bandwidth_need_choice = no_bandwidth_need[no_bandwidth_need['费用类型（机架、带宽、光纤/电路、其他）'].str.contains(resource)]
+
+        no_bandwidth_need_2 = pd.concat([no_bandwidth_need_2, no_bandwidth_need_choice])
+
+
+    return no_bandwidth_need, bandwidth_need
+
 
 
 def match_nornal():
@@ -11,62 +89,23 @@ def match_nornal():
 
     this_path = idc_path()
 
-    # 加载预提表
-    no_bandwidth_list, bandwidth_list = load_accured()
-
-    # print(bandwidth_list)
-
+    # 加载预提表和中间底稿
+    no_bandwidth_dict, bandwidth_dict = load_accured()
     convert_xlsx()
 
     check = pd.read_excel(this_path + '/temp/中间底稿.xlsx')
+    no_bandwidth_need, bandwidth_need = general_match(check, no_bandwidth_dict, bandwidth_dict)
 
 
+    # 匹配合同号
     contract_id = check['合同编号'].to_list()
     contract_id = list(set(contract_id))
 
-    no_bandwidth_need = pd.DataFrame([])
-    bandwidth_need = pd.DataFrame([])
-
-
-    for id in contract_id:
-        for database in no_bandwidth_list:
-            database = database[database['当前计提合同'] == id]
-            no_bandwidth_need = pd.concat([no_bandwidth_need, database])
-
-    for id in contract_id:
-        for database in bandwidth_list:
-            database = database[database['当前计提合同'] == id]
-            bandwidth_need = pd.concat([bandwidth_need, database])
-
-    bandwidth_need.to_excel('/Users/zhuangyuhao/Desktop/test.xlsx', index=False)
+    no_bandwidth_need = no_bandwidth_need[no_bandwidth_need['当前计提合同'].isin(contract_id)]
+    bandwidth_need = bandwidth_need[bandwidth_need['当前计提合同'].isin(contract_id)]
 
     no_bandwidth_need = no_bandwidth_need.iloc[:, :25]
     bandwidth_need = bandwidth_need.iloc[:, :29]
-    print(bandwidth_need['费用期间'])
-
-    # print(bandwidth_need) OKOKOKOKOKOKOKOKOKOK
-
-    period_list = check['费用表月份'].to_list()  #TODO: 检查是费用表月份还是费用所属月份
-
-    period_list = list(map(str, period_list))
-
-    period_list = [period.replace('-', '') for period in period_list]
-    period_list = list(set(period_list))
-
-    # print(period_list) ['202310] OKOKOKOKOKOKOKOKOKOKOK
-
-
-    bandwidth_need['费用期间'] = bandwidth_need['费用期间'].astype(str)  #TODO: 与上述检查核对逻辑
-    no_bandwidth_need['费用期间'] = no_bandwidth_need['费用期间'].astype(str)
-
-    # print(bandwidth_need['费用期间'])
-
-
-    bandwidth_need = bandwidth_need[bandwidth_need['费用期间'].isin(period_list)]
-    no_bandwidth_need = no_bandwidth_need[no_bandwidth_need['费用期间'].isin(period_list)]
-
-    # print(bandwidth_need) empty????????
-
 
     # 保存中间表
     bandwidth_need.to_excel(this_path + '/temp/带宽.xlsx', index=False)
@@ -75,35 +114,24 @@ def match_nornal():
 
 def match_change(supplier: str):
     """匹配变更合同的预提表
-
-    Args:
-        supplier (str): 供应商名称
     """
 
     this_path = idc_path()
 
-    # 加载预提表
-    no_bandwidth_list, bandwidth_list = load_accured()
-
-    # 加载中间表
+    # 加载预提表和中间底稿
+    no_bandwidth_dict, bandwidth_dict = load_accured()
     convert_xlsx()
 
+
     check = pd.read_excel(this_path + '/temp/中间底稿.xlsx')
+    no_bandwidth_need, bandwidth_need = general_match(check, no_bandwidth_dict, bandwidth_dict)
 
     main_supplier = supplier
 
-    no_bandwidth_need = pd.DataFrame([])
-    bandwidth_need = pd.DataFrame([])
-
-
     # 匹配符合的供应商
-    for database in no_bandwidth_list:
-        database = database[database['供应商'] == main_supplier]
-        no_bandwidth_need = pd.concat([no_bandwidth_need, database])
+    no_bandwidth_need = no_bandwidth_need[no_bandwidth_need['供应商'] == main_supplier]
+    bandwidth_need = bandwidth_need[bandwidth_need['供应商'] == main_supplier]
 
-    for database in bandwidth_list:
-        database = database[database['供应商'] == main_supplier]
-        bandwidth_need = pd.concat([bandwidth_need, database])
 
     no_bandwidth_need = no_bandwidth_need[no_bandwidth_need['当前计提合同'].str.startswith('L')]
     no_bandwidth_need = no_bandwidth_need.iloc[:, 0:25]
@@ -111,20 +139,6 @@ def match_change(supplier: str):
     bandwidth_need = bandwidth_need[bandwidth_need['当前计提合同'].str.startswith('L')]
     bandwidth_need = bandwidth_need.iloc[:, 0:29]
 
-
-    period_list = check['费用表月份'].to_list()  #TODO: 同上
-
-    period_list = list(map(str, period_list))
-
-    period_list = [period.replace('-', '') for period in period_list]
-    period_list = list(set(period_list))
-
-    bandwidth_need['费用期间'] = bandwidth_need['费用期间'].astype(str)  #TODO: 同上
-    no_bandwidth_need['费用期间'] = no_bandwidth_need['费用期间'].astype(str)
-
-
-    bandwidth_need = bandwidth_need[bandwidth_need['费用期间'].isin(period_list)]
-    no_bandwidth_need = no_bandwidth_need[no_bandwidth_need['费用期间'].isin(period_list)]
 
     # 保存中间表
     bandwidth_need.to_excel(this_path + '/temp/带宽.xlsx', index=False)
