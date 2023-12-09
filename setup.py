@@ -1,6 +1,8 @@
-alist = ['IP', '端口组' ,'电路', '传输', '电流', '占用', '服务', '改造', '光纤']
-for i in alist:
-     if i in 'CDN机架':
-          print(i)
-     else:
-          print(None)
+# 使用cx_Freeze打包时的setup
+
+from cx_Freeze import setup, Executable
+
+setup(name='GUI',
+      version='0.20',
+      description='',
+      executables=[Executable('GUI.py',base='Win32GUI')])

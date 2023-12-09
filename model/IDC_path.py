@@ -10,10 +10,8 @@ def idc_path():
     this_path = os.path.dirname(this_path)
 
 
-    # macOS 打包路径，配置文件 -> content
+    # cx_Freeze 打包路径
     # this_path = os.path.dirname(os.path.realpath(sys.executable))
-    # this_path = os.path.dirname(this_path)
-    # this_path = os.path.dirname(this_path)
 
 
     return this_path

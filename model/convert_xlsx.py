@@ -11,7 +11,10 @@ def convert_xlsx():
     #设置路径
     this_path = idc_path()
 
+    # 自用
     input_path = '/Users/zhuangyuhao/Downloads'
+    # 非自用
+    # input_path = this_path
 
     # 获取最新的xls文件
     xls_files = [os.path.join(input_path, file) for file in os.listdir(input_path) if file.startswith('export')]

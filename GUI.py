@@ -36,7 +36,7 @@ def toggle_start_match():
 
 # GUI 框架
 root = tk.Tk()
-root.title("IDC 底稿生成器 Ver 0.10 beta")
+root.title("IDC 底稿生成器 Ver 0.21 beta")
 
 # 获取屏幕的宽度和高度
 screen_width = root.winfo_screenwidth()

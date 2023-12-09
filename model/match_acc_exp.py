@@ -76,7 +76,11 @@ def general_match(check, no_bandwidth_dict, bandwidth_dict):
     for resource in resource_list:
         no_bandwidth_need_choice = no_bandwidth_need[no_bandwidth_need['费用类型（机架、带宽、光纤/电路、其他）'].str.contains(resource)]
 
+        no_bandwidth_need = no_bandwidth_need[~no_bandwidth_need['费用类型（机架、带宽、光纤/电路、其他）'].str.contains(resource)]
+
         no_bandwidth_need_2 = pd.concat([no_bandwidth_need_2, no_bandwidth_need_choice])
+
+    no_bandwidth_need = no_bandwidth_need_2
 
 
     return no_bandwidth_need, bandwidth_need
