@@ -6,6 +6,16 @@ from model.IDC_path import idc_path
 
 
 def period_list(check):
+    """
+    将check字典中的三个字段转化为集合并返回
+
+    Args:
+        check (dict): 包含费用表月份、费用所属月份、资源类型三个字段的字典
+
+    Returns:
+        tuple: 包含三个集合的元组，分别为table_list、generate_list、resource_list
+
+    """
     table_list = check['费用表月份'].to_list()
     table_list = list(map(str, table_list))
     table_list = [period.replace('-', '') for period in table_list]
@@ -39,7 +49,17 @@ def filter_dict_values(dictionary, date_list):
 
 
 def general_match(check, no_bandwidth_dict, bandwidth_dict):
-    """通用筛选
+    """
+    通用筛选
+
+    Args:
+        check (str): 筛选条件，需要填写的参数。
+        no_bandwidth_dict (dict): 不含带宽的费用字典。
+        bandwidth_dict (dict): 含带宽的费用字典。
+
+    Returns:
+        Tuple[pd.DataFrame, pd.DataFrame]: 返回一个元组，包含两个 DataFrame，分别为不含带宽的费用和含带宽的费用。
+
     """
 
     # 载入费用表list，费用所属期间list，资源list
@@ -63,6 +83,11 @@ def general_match(check, no_bandwidth_dict, bandwidth_dict):
 
     no_bandwidth_need['费用期间'] = no_bandwidth_need['费用期间'].astype(str)
     bandwidth_need['费用期间'] = bandwidth_need['费用期间'].astype(str)
+    bandwidth_need['费用期间'] = bandwidth_need['费用期间'].str.replace('.0', '')
+
+    # bandwidth_need.to_excel('./temp/XXXX带宽.xlsx', index=False)
+
+    print('该单涉及费用期间为: ', generate_list)
 
     no_bandwidth_need = no_bandwidth_need[no_bandwidth_need['费用期间'].isin(generate_list)]
     bandwidth_need = bandwidth_need[bandwidth_need['费用期间'].isin(generate_list)]
