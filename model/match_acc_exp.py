@@ -108,7 +108,7 @@ def general_match(check, no_bandwidth_dict, bandwidth_dict):
     no_bandwidth_need = no_bandwidth_need_2
 
 
-    return no_bandwidth_need, bandwidth_need
+    return no_bandwidth_need, bandwidth_need, generate_list
 
 
 
@@ -123,7 +123,7 @@ def match_nornal():
     convert_xlsx()
 
     check = pd.read_excel(this_path + '/temp/中间底稿.xlsx')
-    no_bandwidth_need, bandwidth_need = general_match(check, no_bandwidth_dict, bandwidth_dict)
+    no_bandwidth_need, bandwidth_need, generate_list = general_match(check, no_bandwidth_dict, bandwidth_dict)
 
 
     # 匹配合同号
@@ -140,6 +140,8 @@ def match_nornal():
     bandwidth_need.to_excel(this_path + '/temp/带宽.xlsx', index=False)
     no_bandwidth_need.to_excel(this_path + '/temp/非带宽.xlsx', index=False)
 
+    return generate_list
+
 
 def match_change(supplier: str):
     """匹配变更合同的预提表
@@ -153,7 +155,7 @@ def match_change(supplier: str):
 
 
     check = pd.read_excel(this_path + '/temp/中间底稿.xlsx')
-    no_bandwidth_need, bandwidth_need = general_match(check, no_bandwidth_dict, bandwidth_dict)
+    no_bandwidth_need, bandwidth_need, generate_list = general_match(check, no_bandwidth_dict, bandwidth_dict)
 
     main_supplier = supplier
 
@@ -173,13 +175,17 @@ def match_change(supplier: str):
     bandwidth_need.to_excel(this_path + '/temp/带宽.xlsx', index=False)
     no_bandwidth_need.to_excel(this_path + '/temp/非带宽.xlsx', index=False)
 
+    return generate_list
+
 
 def start_match(is_change: bool, supplier: str = None):
     """开始匹配
     """
     if is_change == False:
-        match_nornal()
+        generate_list = match_nornal()
     else:
-        match_change(supplier=supplier)
+        generate_list = match_change(supplier=supplier)
+
+    return generate_list
 
 # start_match(True, 'aaa')
